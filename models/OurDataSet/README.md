@@ -7,3 +7,40 @@
 - 最后的大网络，需要在一个分割的model deeplab和flownet model上finetuning prototxt:model/train.prototxt model: 网盘：flow_iter_500000-remap-noscale.caffemodel
 
 ### run.py
+
+```
+# 计算两张图片的光流
+run.py IMAGE1 IMAGE2 # 自动生成两个imglist到tmp
+# 计算两个imglist中对应图片对的光流
+run.py tmp/img1.txt tmp/img2.txt # imglist放到tmp文件夹
+# 注意所有图片尺寸必须都相同
+# run.py会把图片缩小64倍
+divisor = 64.
+adapted_width = ceil(width/divisor) * divisor
+adapted_height = ceil(height/divisor) * divisor
+rescale_coeff_x = width / adapted_width
+rescale_coeff_y = height / adapted_height
+# 然后把model/deploy.tpl.prototxt 中的
+replacement_list = {
+    '$ADAPTED_WIDTH': ('%d' % adapted_width),
+    '$ADAPTED_HEIGHT': ('%d' % adapted_height),
+    '$TARGET_WIDTH': ('%d' % width),
+    '$TARGET_HEIGHT': ('%d' % height),
+    '$SCALE_WIDTH': ('%.8f' % rescale_coeff_x),
+    '$SCALE_HEIGHT': ('%.8f' % rescale_coeff_y)
+}
+# 替换数值生成新的tmp/deploy.txt
+# 生成光流结果所放位置
+layer {
+  name: "FLOWriter"
+  type: "FLOWriter"
+  bottom: "predict_flow_final"
+  writer_param {
+    folder: "./results"
+    prefix: "flownetc-pred-remap-"
+    suffix: ""
+    scale: 1.0
+  }
+}
+
+```
