@@ -9,4 +9,4 @@ v1.2版本进行修改
 - remap层参考了论文View Synthesis by Appearance Flow
 https://github.com/tinghuiz/appearance-flow/blob/8f461936b1fbef9eebb9963e46be571d9f3e855a/caffe/src/caffe/layers/remap_layer.cpp
 
-- 具体使用见models/OurDataSet/README.md
+- 具体使用见[models/OurDataSet](https://github.com/Sundrops/flownet-rgh/tree/master/models/OurDataSet)
